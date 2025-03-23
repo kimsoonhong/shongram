@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.shong.shongram.common.FileManager;
 import com.shong.shongram.post.domain.Post;
 import com.shong.shongram.post.repository.PostRepository;
 
@@ -19,12 +21,15 @@ public class PostService {
 		this.postRepository = postRepository;
 	}
 	
-	public boolean addPost(int userId, String title, String contents){
+	public boolean addPost(int userId, String title, String contents, MultipartFile file){
+		
+		String urlPath = FileManager.saveFile(userId, file);
 		
 		Post post =  Post.builder()
 				.userId(userId)
 				.title(title)
 				.contents(contents)
+				.imagePath(urlPath)
 				.build();
 		
 		try {
@@ -46,8 +51,6 @@ public class PostService {
 	}
 	
 	public Post getPost(int id) {
-		
-		
 		
 		Optional<Post> optionalPost =  postRepository.findById(id); 
 		
